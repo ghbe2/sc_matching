@@ -383,6 +383,20 @@
         }
     }
 
+    // ===== しゅがけ共通アチーブメントの旗 =====
+    // メニューページ（/sugar-cage/）が localStorage を読んで判定している。
+    // localStorage はパスではなくオリジン単位なので、同じ ghbe2.github.io にいる限り届く。
+    // キー名と形は他ゲームと共有しているので変更しないこと。
+    // 保存に失敗しても本編を止めないよう、まるごと握りつぶす。
+    function scFlag(id) {
+        try {
+            var k = 'sugar_cage_flags', a = JSON.parse(localStorage.getItem(k) || '{}');
+            if (a[id]) return;          // 一度立った旗は上書きしない
+            a[id] = Date.now();
+            localStorage.setItem(k, JSON.stringify(a));
+        } catch (e) {}
+    }
+
     // ===== 最推し投票機能 =====
     // ↓ Apps Script をWebアプリとしてデプロイしたURLに差し替える
     const VOTE_API_URL = 'https://script.google.com/macros/s/AKfycbzTZb3_Y0nvgyQl11qIbc2B4XY1Y7XptM2Kyn8wTXNumo2OU8wD0xmFf-GslOr-t_2Rfg/exec';
@@ -422,6 +436,8 @@
             // 同じキャラに再投票 → 何もしない（既に推し済み）
             return;
         }
+        // ここを抜けた＝別のキャラに入れ直した。初回投票では立てない
+        if (oldId) scFlag('m.revote');
         // 楽観的にローカルを更新
         setMyVote(charId);
 
@@ -1430,6 +1446,9 @@
         corrCard.className = 'corr-card ' + ((isLocked || isUnimplemented) ? 'locked' : '');
         let iconHtml;
         if (!isLocked && !isUnimplemented) {
+            // 中身の見えるカードを1枚でも描いた＝相関図が成立して見えている。
+            // ロックだけが並んでいる状態では立てない
+            scFlag('m.relations');
             const iconSrc = 'https://raw.githubusercontent.com/ghbe2/sc_matching/main/images/characters/' + String(corr.id).padStart(2, '0') + '_icon.png';
             iconHtml = '<div class="corr-icon" style="padding:0;overflow:hidden;background:none;"><img src="' + iconSrc + '" style="width:100%;height:100%;object-fit:cover;"></div>';
             corrCard.onclick = () => { showArchiveDetail(corrChar); };
