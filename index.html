@@ -1446,10 +1446,7 @@
         corrCard.className = 'corr-card ' + ((isLocked || isUnimplemented) ? 'locked' : '');
         let iconHtml;
         if (!isLocked && !isUnimplemented) {
-            // 中身の見えるカードを1枚でも描いた＝相関図が成立して見えている。
-            // ロックだけが並んでいる状態では立てない
-            scFlag('m.relations');
-            const iconSrc = 'https://raw.githubusercontent.com/ghbe2/sc_matching/main/images/characters/' + String(corr.id).padStart(2, '0') + '_icon.png';
+            const iconSrc ='https://raw.githubusercontent.com/ghbe2/sc_matching/main/images/characters/' + String(corr.id).padStart(2, '0') + '_icon.png';
             iconHtml = '<div class="corr-icon" style="padding:0;overflow:hidden;background:none;"><img src="' + iconSrc + '" style="width:100%;height:100%;object-fit:cover;"></div>';
             corrCard.onclick = () => { showArchiveDetail(corrChar); };
         } else {

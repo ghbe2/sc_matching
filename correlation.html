@@ -130,6 +130,18 @@ async function loadData() {
   }
 }
 
+/* しゅがけ共通のアチーブメント旗。メニューページ（/sugar-cage/）がこれを読む。
+   キー名と形は他ゲームと共有しているので変更しないこと。
+   保存に失敗しても本編を止めないよう、まるごと握りつぶす */
+function scFlag(id) {
+  try {
+    var k = 'sugar_cage_flags', a = JSON.parse(localStorage.getItem(k) || '{}');
+    if (a[id]) return;          // 一度立った旗は上書きしない
+    a[id] = Date.now();
+    localStorage.setItem(k, JSON.stringify(a));
+  } catch (e) {}
+}
+
 // 解放状態：本体と共有（同一オリジンの localStorage 'sugar_cage_viewed'）
 let viewedSet = new Set();
 try {
@@ -203,6 +215,14 @@ function rebuildActive() {
   });
   activeEdges = Object.values(map).map(e => ({ ...e, bi: !!(e.abLabel && e.baLabel) }));
   updateEdgeRests();
+
+  /* アチーブメント「伸びて縮んで」。
+     つながりのある本編キャラ同士が、両方とも解放された状態でこの図が組まれたとき。
+     片方でもロックなら立てない。ID100番台の脇役は常時表示なので数に入れない。
+     マスク表示のON/OFFには依存させない（解放しているという事実で判定する） */
+  if (activeEdges.some(e => e.a < 100 && e.b < 100 && viewedSet.has(e.a) && viewedSet.has(e.b))) {
+    scFlag('m.relations');
+  }
 
   // groups: 実効メンバー（直属＋子孫）
   const groups = data.groups.map((g, i) => ({ ...g, palette: GROUP_PALETTE[i % GROUP_PALETTE.length] }));
