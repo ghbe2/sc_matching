@@ -14,7 +14,7 @@
     <meta name="twitter:image" content="https://ghbe2.github.io/sc_matching/images/ogp.png">
     <meta name="twitter:site" content="@ai_be2">
     <title>しゅがけマッチング</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍬</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💔</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
         :root {
@@ -373,6 +373,7 @@
 
     function saveBestMatchRates() {
         localStorage.setItem('sugar_cage_best_match', JSON.stringify(bestMatchRates));
+        window.SC && SC.check();   // 開示請求・月がきれいですね
     }
 
     function recordMatchRate(charId, pct) {
@@ -437,9 +438,10 @@
             return;
         }
         // ここを抜けた＝別のキャラに入れ直した。初回投票では立てない
-        if (oldId) scFlag('m.revote');
+        if (oldId) { window.SC ? SC.flag('m.revote') : scFlag('m.revote'); }
         // 楽観的にローカルを更新
         setMyVote(charId);
+        window.SC && SC.check();   // 推し活
 
         // Apps Script へ送信（no-corsモード：レスポンスは読めないが送信はされる）
         if (VOTE_API_URL && VOTE_API_URL.indexOf('http') === 0) {
@@ -539,6 +541,7 @@
 
     function saveViewedChars() {
         localStorage.setItem('sugar_cage_viewed', JSON.stringify(Array.from(viewedCharIds)));
+        window.SC && SC.check();   // はじめての出会い・十二支/四神/旧支配者のコンプ
     }
 
     async function loadCharacters() {
@@ -1588,5 +1591,7 @@
         renderStartRanking();
     })();
 </script>
+<script src="https://ghbe2.github.io/sugar-cage/sc-ach.js"></script>
+<script>window.SC && SC.init('matching');</script>
 </body>
 </html>

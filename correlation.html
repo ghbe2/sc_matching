@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Sugar Cage 相関図</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍬</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💔</text></svg>">
 <style>
   :root{ --pink:#e91e63; --pink2:#c2185b; --ink:#2b1f24; --bg:#fce4ec; }
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -221,7 +221,7 @@ function rebuildActive() {
      片方でもロックなら立てない。ID100番台の脇役は常時表示なので数に入れない。
      マスク表示のON/OFFには依存させない（解放しているという事実で判定する） */
   if (activeEdges.some(e => e.a < 100 && e.b < 100 && viewedSet.has(e.a) && viewedSet.has(e.b))) {
-    scFlag('m.relations');
+    window.SC ? SC.flag('m.relations') : scFlag('m.relations');
   }
 
   // groups: 実効メンバー（直属＋子孫）
@@ -974,5 +974,7 @@ function loop() {
 })();
 window.addEventListener('resize', () => { if (!userTouched) fitAll(); });
 </script>
+<script src="https://ghbe2.github.io/sugar-cage/sc-ach.js"></script>
+<script>window.SC && SC.init('matching');</script>
 </body>
 </html>
